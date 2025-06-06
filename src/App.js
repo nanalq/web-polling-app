@@ -12,6 +12,42 @@ export default function App() {
     options: ['', '']
   });
 
+  // Handle URL parameters on component mount
+  React.useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pollId = urlParams.get('poll');
+    
+    if (pollId) {
+      // Find the poll with this ID
+      const foundPoll = polls.find(poll => poll.id.toString() === pollId);
+      if (foundPoll) {
+        setActivePoll(foundPoll);
+        setCurrentView('poll');
+      } else {
+        // If poll not found, show message or redirect to home
+        // For now, we'll just stay on home page
+        console.log('Poll not found:', pollId);
+      }
+    }
+  }, [polls]);
+
+  // Update URL when viewing a poll
+  const viewPoll = (poll) => {
+    setActivePoll(poll);
+    setCurrentView('poll');
+    // Update URL without page reload
+    const newUrl = `${window.location.pathname}?poll=${poll.id}`;
+    window.history.pushState({}, '', newUrl);
+  };
+
+  // Clear URL when going back to home
+  const goHome = () => {
+    setCurrentView('home');
+    setActivePoll(null);
+    // Clear URL parameters
+    window.history.pushState({}, '', window.location.pathname);
+  };
+
   const createPoll = () => {
     if (newPoll.question.trim() && newPoll.options.every(opt => opt.trim())) {
       const poll = {
@@ -27,7 +63,7 @@ export default function App() {
       
       setPolls([poll, ...polls]);
       setNewPoll({ question: '', options: ['', ''] });
-      setCurrentView('home');
+      goHome();
     }
   };
 
@@ -77,7 +113,7 @@ export default function App() {
     setPolls(polls.filter(poll => poll.id !== pollId));
     if (activePoll && activePoll.id === pollId) {
       setActivePoll(null);
-      setCurrentView('home');
+      goHome();
     }
   };
 
@@ -158,10 +194,7 @@ export default function App() {
 
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        setActivePoll(poll);
-                        setCurrentView('poll');
-                      }}
+                      onClick={() => viewPoll(poll)}
                       className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       <BarChart3 className="w-4 h-4" />
@@ -197,7 +230,7 @@ export default function App() {
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800">Create New Poll</h2>
               <button
-                onClick={() => setCurrentView('home')}
+                onClick={goHome}
                 className="text-gray-500 hover:text-gray-700 text-sm"
               >
                 ← Back
@@ -257,7 +290,7 @@ export default function App() {
 
               <div className="flex gap-3 pt-4">
                 <button
-                  onClick={() => setCurrentView('home')}
+                  onClick={goHome}
                   className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   Cancel
@@ -285,7 +318,7 @@ export default function App() {
           <div className="bg-white rounded-xl shadow-lg p-8">
             <div className="flex items-center justify-between mb-6">
               <button
-                onClick={() => setCurrentView('home')}
+                onClick={goHome}
                 className="text-gray-500 hover:text-gray-700 text-sm"
               >
                 ← Back to Polls
