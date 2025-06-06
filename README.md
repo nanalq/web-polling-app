@@ -10,11 +10,11 @@ Responsive Design - Works perfectly on desktop and mobile
 Modern UI - Clean, intuitive interface with smooth animations
 No Backend Required - Runs entirely in the browser
 
- Installation
+✨ Installation
 
 Clone the repository:
 
-bashgit clone https://github.com/nanalqweb-polling-app.git
+bashgit clone https://github.com/nanalq/web-polling-app.git
 cd web-polling-app
 
 Install dependencies:
@@ -50,7 +50,7 @@ bashnpm install --save-dev gh-pages
 
 Update your package.json homepage field:
 
-json"homepage": "https://YOUR_USERNAME.github.io/web-polling-app"
+json"homepage": "https://nanalq.github.io/web-polling-app"
 
 Deploy:
 
